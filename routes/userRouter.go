@@ -3,11 +3,12 @@ package routes
 import (
 	controller "github.com/avatarnguyen/travel_backend/controllers"
 	middleware "github.com/avatarnguyen/travel_backend/middleware"
-	"github.com/gin-gonic/gin"
+
+	"github.com/gofiber/fiber/v2"
 )
 
-func UserRoutes(incomingRoute *gin.Engine) {
+func UserRoutes(incomingRoute *fiber.App) {
 	incomingRoute.Use(middleware.Authenticate())
-	incomingRoute.GET("/users", controller.GetUsers())
-	incomingRoute.GET("/users/:user_id", controller.GetUser())
+	incomingRoute.Get("/users", controller.GetUsers())
+	incomingRoute.Get("/users/:user_id", controller.GetUser())
 }

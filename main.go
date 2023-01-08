@@ -4,8 +4,12 @@ import (
 	"log"
 	"os"
 
-	routes "github.com/avatarnguyen/travel_backend/routes"
-	"github.com/gin-gonic/gin"
+	"github.com/avatarnguyen/travel_backend/routes"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/joho/godotenv"
 )
 
@@ -20,19 +24,16 @@ func main() {
 		port = "8000"
 	}
 
-	router := gin.New()
-	router.Use(gin.Logger())
+	app := fiber.New()
+	app.Use(logger.New())
+	app.Use(recover.New())
+	app.Use(cors.New())
 
-	routes.AuthRoutes(router)
-	routes.UserRoutes(router)
+	routes.AuthRoutes(app)
+	routes.UserRoutes(app)
 
-	router.GET("/api-1", func(c *gin.Context) {
-		c.JSON(200, gin.H{"success": "Access granted for api-1"})
-	})
-
-	router.GET("/api-2", func(c *gin.Context) {
-		c.JSON(200, gin.H{"success": "Access granted for api-2"})
-	})
-
-	router.Run(":" + port)
+	err1 := app.Listen(":" + port)
+	if err1 != nil {
+		log.Panic("not able to start server")
+	}
 }

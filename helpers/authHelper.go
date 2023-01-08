@@ -2,31 +2,30 @@ package helpers
 
 import (
 	"errors"
-
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 )
 
-func CheckUserType(c *gin.Context, role string) (err error) {
-	userType := c.GetString("user_type")
-	err = nil
-	if userType != role {
-		err = errors.New("Unauthorized to access this resource")
-		return err
-	}
-
-	return err
-}
-
-func MatchUserTypeToUuid(c *gin.Context, userId string) (err error) {
-	userType := c.GetString("user_type")
-	uid := c.GetString("uid")
+func MatchUserTypeToUuid(c *fiber.Ctx, userId string) (err error) {
+	userType := c.GetRespHeader("user_type")
+	uid := c.GetRespHeader("uid")
 	err = nil
 
 	if userType == "USER" && uid != userId {
-		err = errors.New("Unauthorized to access this resource")
+		err = errors.New("unauthorized to access this resource")
 		return err
 	}
 
 	err = CheckUserType(c, userType)
+	return err
+}
+func CheckUserType(c *fiber.Ctx, role string) (err error) {
+	userType := c.GetRespHeader("user_type")
+
+	err = nil
+	if userType != role {
+		err = errors.New("unauthorized to access this resource")
+		return err
+	}
+
 	return err
 }

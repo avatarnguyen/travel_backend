@@ -7,7 +7,8 @@ import (
 	"os"
 	"time"
 
-	database "github.com/avatarnguyen/travel_backend/database"
+	"github.com/avatarnguyen/travel_backend/database"
+
 	jwt "github.com/dgrijalva/jwt-go"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -47,8 +48,11 @@ func GenerateAllToken(email string, firstName string, lastName string, userType 
 	}
 
 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(SECRET_KEY))
+	if err != nil {
+		log.Panic(err)
+		return
+	}
 	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString([]byte(SECRET_KEY))
-
 	if err != nil {
 		log.Panic(err)
 		return
@@ -65,7 +69,6 @@ func ValidateToken(signedToken string) (claims *SignedDetails, msg string) {
 			return []byte(SECRET_KEY), nil
 		},
 	)
-
 	if err != nil {
 		msg = err.Error()
 		return
@@ -79,8 +82,8 @@ func ValidateToken(signedToken string) (claims *SignedDetails, msg string) {
 		return
 	}
 
-	if claims.StandardClaims.ExpiresAt < time.Now().Local().Unix() {
-		msg = fmt.Sprintf("token is expired")
+	if claims.ExpiresAt < time.Now().Local().Unix() {
+		msg = fmt.Sprint("token is expired")
 		msg = err.Error()
 		return
 	}
@@ -89,7 +92,7 @@ func ValidateToken(signedToken string) (claims *SignedDetails, msg string) {
 }
 
 func UpdateAllToken(signedToken string, signedRefreshToken string, userId string) {
-	var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
 
 	var updateObj primitive.D
 	updateObj = append(updateObj, bson.E{Key: "token", Value: signedToken})
@@ -116,5 +119,4 @@ func UpdateAllToken(signedToken string, signedRefreshToken string, userId string
 		log.Panic()
 		return
 	}
-	return
 }

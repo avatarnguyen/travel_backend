@@ -1,28 +1,26 @@
 package middleware
 
 import (
-	"fmt"
-	"net/http"
+	"github.com/avatarnguyen/travel_backend/helpers"
 
-	helper "github.com/avatarnguyen/travel_backend/helpers"
-	"github.com/gin-gonic/gin"
+	"github.com/gofiber/fiber/v2"
 )
 
-func Authenticate() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		clientToken := c.Request.Header.Get("token")
+func Authenticate() fiber.Handler {
+	return func(c *fiber.Ctx) error {
 
+		clientToken := c.Get("token")
 		if clientToken == "" {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("No Authorization header provided")})
-			c.Abort()
-			return
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "No Authorization header provided",
+			})
 		}
 
-		claims, err := helper.ValidateToken(clientToken)
+		claims, err := helpers.ValidateToken(clientToken)
 		if err != "" {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err})
-			c.Abort()
-			return
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": err,
+			})
 		}
 
 		c.Set("email", claims.Email)
@@ -30,7 +28,6 @@ func Authenticate() gin.HandlerFunc {
 		c.Set("last_name", claims.Last_name)
 		c.Set("uid", claims.Uid)
 		c.Set("user_type", claims.User_type)
-		c.Next()
+		return c.Next()
 	}
-
 }
