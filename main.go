@@ -13,6 +13,12 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// @title Travel Buddy
+// @version 0.1
+// @description Golang backend API using Fiber and MongoDB for Travel Buddy Mobile App.
+// @contact.name Anh Nguyen
+// @host localhost:8080
+// @BasePath /
 func main() {
 	err := godotenv.Load(".env")
 	if err != nil {
@@ -31,6 +37,10 @@ func main() {
 
 	routes.AuthRoutes(app)
 	routes.UserRoutes(app)
+	routes.SearchCityRoutes(app)
+
+	// attach swagger
+	//config.AddSwaggerRoutes(app)
 
 	err1 := app.Listen(":" + port)
 	if err1 != nil {
