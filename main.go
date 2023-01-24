@@ -38,6 +38,7 @@ func main() {
 	routes.AuthRoutes(app)
 	routes.UserRoutes(app)
 	routes.SearchCityRoutes(app)
+	routes.IternaryRoutes(app)
 
 	// attach swagger
 	//config.AddSwaggerRoutes(app)
