@@ -2,15 +2,16 @@ package helpers
 
 import (
 	"errors"
+
 	"github.com/gofiber/fiber/v2"
 )
 
-func MatchUserTypeToUuid(c *fiber.Ctx, userId string) (err error) {
+func MatchUserTypeToUUID(c *fiber.Ctx, userID string) (err error) {
 	userType := c.GetRespHeader("user_type")
 	uid := c.GetRespHeader("uid")
 	err = nil
 
-	if userType == "USER" && uid != userId {
+	if userType == "USER" && uid != userID {
 		err = errors.New("unauthorized to access this resource")
 		return err
 	}
@@ -18,6 +19,7 @@ func MatchUserTypeToUuid(c *fiber.Ctx, userId string) (err error) {
 	err = CheckUserType(c, userType)
 	return err
 }
+
 func CheckUserType(c *fiber.Ctx, role string) (err error) {
 	userType := c.GetRespHeader("user_type")
 

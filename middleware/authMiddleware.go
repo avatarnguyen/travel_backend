@@ -8,7 +8,6 @@ import (
 
 func Authenticate() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-
 		clientToken := c.Get("token")
 		if clientToken == "" {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -24,10 +23,10 @@ func Authenticate() fiber.Handler {
 		}
 
 		c.Set("email", claims.Email)
-		c.Set("first_name", claims.First_name)
-		c.Set("last_name", claims.Last_name)
-		c.Set("uid", claims.Uid)
-		c.Set("user_type", claims.User_type)
+		c.Set("first_name", claims.FirstName)
+		c.Set("last_name", claims.LastName)
+		c.Set("uid", claims.UID)
+		c.Set("user_type", claims.UserType)
 		return c.Next()
 	}
 }

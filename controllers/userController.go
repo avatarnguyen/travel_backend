@@ -112,7 +112,7 @@ func Login() fiber.Handler {
 		user := new(models.User)
 
 		if err := c.BodyParser(user); err != nil {
-			return c.Status(http.StatusBadRequest).JSONP(fiber.Map{
+			return c.Status(http.StatusBadRequest).JSON(fiber.Map{
 				"error": err.Error(),
 			})
 		}
@@ -120,7 +120,7 @@ func Login() fiber.Handler {
 		err := userCollection.FindOne(ctx, bson.M{"email": user.Email}).Decode(&foundUser)
 		defer cancel()
 		if err != nil {
-			return c.Status(http.StatusInternalServerError).JSONP(fiber.Map{
+			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
 				"error": "email or password is incorrect",
 			})
 		}
@@ -164,12 +164,19 @@ func Login() fiber.Handler {
 	}
 }
 
+// @Summary Get One User.
+// @Description fetch one user with the given id
+// @Tags user
+// @Accept */*
+// @Produce json
+// @Success 200 {object} []models.User
+// @Router /users/:user_id [get]
 func GetUser() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		userId := c.Params("user_id")
+		userID := c.Params("user_id")
 
-		fmt.Println("User Id : " + userId)
-		if err := helpers.MatchUserTypeToUuid(c, userId); err != nil {
+		fmt.Println("User Id : " + userID)
+		if err := helpers.MatchUserTypeToUUID(c, userID); err != nil {
 			return c.Status(http.StatusBadRequest).JSON(fiber.Map{
 				"error": err.Error(),
 			})
@@ -177,7 +184,7 @@ func GetUser() fiber.Handler {
 		ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
 
 		var user models.User
-		err := userCollection.FindOne(ctx, bson.M{"user_id": userId}).Decode(&user)
+		err := userCollection.FindOne(ctx, bson.M{"user_id": userID}).Decode(&user)
 
 		defer cancel()
 
