@@ -9,13 +9,16 @@ import (
 type Iternary struct {
 	ID           primitive.ObjectID `bson:"_id"`
 	IternaryID   string             `json:"iternaryId"`
-	Name         *string            `json:"name"`
+	Name         string             `json:"name" validate:"required"`
 	Description  *string            `json:"description"`
 	Note         *string            `json:"note"`
 	City         *string            `json:"city"`
-	Country      *string            `json:"country"`
-	Creator      string             `json:"creator"`
-	Owner        *string            `json:"owner"`
+	Country      string             `json:"country" validate:"required"`
+	CreatorID    string             `json:"creatorId" validate:"required"`
+	OwnerID      string             `json:"ownerId" validate:"required"`
+	CreatorName  *string            `json:"creator"`
+	OwnerName    *string            `json:"owner"`
+	Tags         []string           `json:"tags"`
 	IsTemplate   bool               `json:"isTemplate"`
 	Rating       int                `json:"rating"`
 	Destinations []Destination      `json:"destinations"`
@@ -27,8 +30,13 @@ type Iternary struct {
 
 type Destination struct {
 	ID            primitive.ObjectID `bson:"_id"`
+	City          *string            `json:"city"`
+	Country       string             `json:"country" validate:"required"`
 	Note          *string            `json:"note"`
-	Place         *Place             `json:"place"`
+	PlaceID       *string            `json:"placeId"`
+	TripAdvisorID *string            `json:"tripAdvisorId"`
+	FourSquareID  *string            `json:"fourSquareId"`
+	Tags          []string           `json:"tags"`
 	StartDateTime time.Time          `json:"startDateTime"`
 	EndDateTime   time.Time          `json:"endDateTime"`
 }
