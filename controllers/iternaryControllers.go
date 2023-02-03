@@ -13,6 +13,24 @@ import (
 
 var iternaryCollection = database.OpenConnection(database.Client, "iternary")
 
+func DeleteIternary() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		return c.SendStatus(fiber.StatusOK)
+	}
+}
+
+func EditIterary() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		return c.SendStatus(fiber.StatusOK)
+	}
+}
+
+func GetIternary() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		return c.SendStatus(fiber.StatusOK)
+	}
+}
+
 func CreateIternary() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
@@ -39,9 +57,6 @@ func CreateIternary() fiber.Handler {
 			destination := iternary.Destinations[i]
 
 			destination.ID = primitive.NewObjectID()
-			destination.Place.ID = primitive.NewObjectID()
-			destination.Place.CreatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-			destination.Place.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		}
 
 		resultInsertedNumber, insertErr := iternaryCollection.InsertOne(ctx, iternary)
